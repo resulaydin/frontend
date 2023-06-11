@@ -1,0 +1,206 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,500&display=swap");
+
+/* ::-webkit-scrollbar {
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dee0ea;
+  min-height: 30px;
+} */
+
+/*! Base start*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Jost", sans-serif;
+}
+
+body {
+  background-color: #fafafa !important;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 500;
+  display: flex;
+  width: 90px;
+  height: 90px;
+}
+
+button {
+  /* padding: 0 25px;  Bunu aşağıda özelleştirebileceğimiz için kaldırdık.*/
+  cursor: pointer;
+  border: none;
+}
+button:disabled {
+  opacity: 0.4 !important;
+  cursor: no-drop;
+}
+
+/*                      ** START **                             */
+/* Bu sınıf button sınıfındna sonra en genel şablon olacaktır.  */
+.btn {
+  display: inline-block;
+  padding: 0 25px;
+  line-height: 40px;
+  border: 1px solid black;
+  font-weight: 500;
+  transition: ease 0.2s all;
+}
+.btn-sm {
+  line-height: 33px;
+}
+.btn-lg {
+  line-height: 45px;
+}
+
+.btn-primary {
+  background-color: #1367ef;
+  color: white;
+  border-color: #1367ef;
+}
+.btn-primary:hover {
+  background-color: white;
+  color: #1367ef;
+  border-color: #1367ef;
+}
+
+textarea {
+  overflow: auto;
+}
+/*                      ** END **                               */
+
+/*                      ** START **                             */
+/* Input stardart işlemleri */
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea {
+  outline: none;
+  border: 1px solid #dee0ea;
+  padding: 8px 8px 8px 15px;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: gray;
+}
+
+/* number input arrowlarını sürekli gösterdik 
+     Default olarak focus olduğunda açılmaktaydı.
+  */
+input[type="number"]::-webkit-inner-spin-button {
+  opacity: 1;
+}
+
+/*                      ** END **                               */
+
+.img-fluid {
+  width: 100%;
+}
+
+.show {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/*! Base end*/
+
+/* orjinal responsive codes */
+
+/* base responsive  */
+
+@media (max-width: 1200px) {
+  .container {
+    max-width: 992px;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 576px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    max-width: 350px;
+  }
+}
+
+/*!  Responsive  */
+
+/* @media (max-width: 1526px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+@media (max-width: 1248px) {
+  .container {
+    max-width: 992px;
+  }
+}
+@media (max-width: 1035px) {
+  .container {
+    max-width: 768px;
+  }
+}
+@media (max-width: 768px) {
+  .container {
+    max-width: 576px;
+  }
+}
+@media (max-width: 576px) {
+  .container {
+    max-width: 400px;
+  }
+}
+@media (max-width: 420px) {
+  .container {
+    max-width: 350px;
+  }
+} */
