@@ -1,5 +1,5 @@
 /* layout */
-/* @import url("base.css"); */
+@import url("base.css");
 
 /* pages */
 @import url("pages/login.css");
