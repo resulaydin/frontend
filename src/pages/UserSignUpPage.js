@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import axios from "axios";
+import { SignUp } from "../api/apiCalls";
+import { async } from "q";
 
 const UserSignUpPage = () => {
   const [user, setUser] = useState({
@@ -8,6 +9,7 @@ const UserSignUpPage = () => {
     displayName: null,
     password: null,
   });
+  const [errors, setErrors] = useState({});
 
   const [pandingApiCall, setPandingApiCall] = useState(false);
 
@@ -16,7 +18,7 @@ const UserSignUpPage = () => {
     setUser({ ...user, [name]: value });
   };
 
-  const onClickSignUp = (event) => {
+  const onClickSignUp = async (event) => {
     event.preventDefault();
     const { username, displayName, password } = user;
     const body = {
@@ -26,18 +28,18 @@ const UserSignUpPage = () => {
     };
 
     setPandingApiCall(true);
-
-    axios
-      .post("/api/v1.0/users", body)
-      .then((response) => {
-        console.log("basarili");
-        setPandingApiCall(false);
-      })
-      .catch((error) => {
-        console.log("error");
-        setPandingApiCall(false);
-      });
+    try {
+      const response = await SignUp(body);
+      console.log(response);
+      console.log(response.data);
+    } catch (error) {
+      const value = error.response.data.validationErrors;
+      setErrors({ ...value }); // Yakaladım oğlum seni
+      console.log({ ...value });
+    }
+    setPandingApiCall(false);
   };
+  const { username } = errors;
 
   return (
     <div className="container-sm">
@@ -47,11 +49,11 @@ const UserSignUpPage = () => {
           <label>Username</label>
           <input
             name="username"
-            className="form-control"
+            className={username ? "form-control is-invalid" : "form-control"}
             onChange={handleOnChange}
             required
           />
-          <div class="invalid-feedback">username can not be empty</div>
+          <div className="invalid-feedback">{username}</div>
         </div>
         <div className="mb-3 form-group">
           <label>Display Name</label>
