@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { SignUp } from "../api/apiCalls";
-import { async } from "q";
+import { signUp, changeLanguage } from "../api/apiCalls";
 import Input from "../components/Input";
+import { useTranslation, getI18n } from "react-i18next";
 
 const UserSignUpPage = () => {
   const [form, setForm] = useState({
@@ -53,9 +53,9 @@ const UserSignUpPage = () => {
       password,
     };
 
-    setPandingApiCall(true);
     try {
-      const response = await SignUp(body);
+      setPandingApiCall(true);
+      const response = await signUp(body);
       console.log(response);
     } catch (error) {
       const responseError = error.response.data.validationErrors;
@@ -71,33 +71,40 @@ const UserSignUpPage = () => {
     }
     setPandingApiCall(false);
   };
+
+  const handleChangeLanguage = (language) => {
+    getI18n().changeLanguage(language);
+    changeLanguage(language);
+  };
+  // console.log(getI18n());
   const { username, displayName, password, passwordRepeat } = errors;
+  const { t } = useTranslation();
 
   return (
     <div className="container-sm">
       <form>
-        <h1>Sign Up</h1>
+        <h1>{t("Sign Up")}</h1>
         <Input
-          label="Username"
+          label={t("Username")}
           name="username"
           error={username}
           handleOnChange={handleOnChange}
         />
         <Input
-          label="Display Name"
+          label={t("Display Name")}
           name="displayName"
           error={displayName}
           handleOnChange={handleOnChange}
         />
         <Input
-          label="Password"
+          label={t("Password")}
           name="password"
           error={password}
           type="password"
           handleOnChange={handleOnChange}
         />
         <Input
-          label="Password Repeat"
+          label={t("Password Repeat")}
           name="passwordRepeat"
           error={passwordRepeat}
           type="password"
@@ -112,10 +119,34 @@ const UserSignUpPage = () => {
             {pandingApiCall && (
               <span className="spinner-border spinner-border-sm"></span>
             )}
-            Submit
+            {t("Submit")}
           </button>
         </div>
       </form>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          columnGap: ".3125rem",
+        }}
+      >
+        <img
+          src="https://flagsapi.com/TR/flat/24.png"
+          alt="Turkey Flag"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            handleChangeLanguage("tr");
+          }}
+        ></img>
+        <img
+          src="https://flagsapi.com/US/flat/24.png"
+          alt="US Flag"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            handleChangeLanguage("en");
+          }}
+        ></img>
+      </div>
     </div>
   );
 };
