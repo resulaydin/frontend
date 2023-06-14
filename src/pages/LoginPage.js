@@ -3,6 +3,7 @@ import { useState } from "react";
 import { login, changeLanguage } from "../api/apiCalls";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import ButtonWithLanguage from "../components/ButtonWithLanguage";
 import { useTranslation, getI18n } from "react-i18next";
 
 const LoginPage = () => {
@@ -22,13 +23,13 @@ const LoginPage = () => {
     event.preventDefault();
     const { username, password } = form;
 
-    const auth = {
+    const creds = {
       username,
       password,
     };
 
     try {
-      const response = await login(auth);
+      const response = await login(creds);
       console.log(response);
     } catch (error) {
       console.log(error.response.data.validationErrors);
@@ -63,24 +64,7 @@ const LoginPage = () => {
         />
         <Button text={t("Submit")} onClick={handleOnClick} />
       </form>
-      <div className="flags">
-        <img
-          src="https://flagsapi.com/TR/flat/24.png"
-          alt="Turkey Flag"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            handleChangeLanguage("tr");
-          }}
-        />
-        <img
-          src="https://flagsapi.com/US/shiny/24.png"
-          alt="America Flag"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            handleChangeLanguage("en");
-          }}
-        />
-      </div>
+      <ButtonWithLanguage onChangeLanguage={handleChangeLanguage} />
     </div>
   );
 };
