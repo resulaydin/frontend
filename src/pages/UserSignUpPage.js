@@ -22,7 +22,6 @@ const UserSignUpPage = () => {
 
     setForm((previousForm) => ({ ...previousForm, [name]: value }));
     setErrors((previousErrors) => ({ ...previousErrors, [name]: undefined }));
-    console.log("form.passwordRepeat: " + form.passwordRepeat);
 
     if (name === "password" || name === "passwordRepeat") {
       if (name === "password" && value !== form.passwordRepeat) {
@@ -88,27 +87,27 @@ const UserSignUpPage = () => {
           label={t("Username")}
           name="username"
           error={username}
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <Input
           label={t("Display Name")}
           name="displayName"
           error={displayName}
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <Input
           label={t("Password")}
           name="password"
           error={password}
           type="password"
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <Input
           label={t("Password Repeat")}
           name="passwordRepeat"
           error={passwordRepeat}
           type="password"
-          handleOnChange={handleOnChange}
+          onChange={handleOnChange}
         />
         <div className="mb-3 form-group">
           <button

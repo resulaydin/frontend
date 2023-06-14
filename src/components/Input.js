@@ -1,7 +1,7 @@
 import React from "react";
 
 const Input = (props) => {
-  const { name, label, error, handleOnChange, type } = props;
+  const { name, label, error, onChange, type } = props;
   const className = error ? "form-control is-invalid" : "form-control";
   return (
     <div className="mb-3" style={{ textAlign: "left" }}>
@@ -9,11 +9,10 @@ const Input = (props) => {
       <input
         name={name}
         className={className}
-        onChange={handleOnChange}
+        onChange={onChange}
         type={type}
         required
       />
-      <div className="invalid-feedback">{error}</div>
     </div>
   );
 };
