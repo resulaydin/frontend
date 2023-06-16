@@ -12,17 +12,21 @@ const LoginPage = () => {
     password: null,
   });
 
-  const [error, setError] = useState({});
+  const [errors, setError] = useState({});
+  const [isSpining, setIsSpining] = useState(false);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setForm((previousForm) => ({ ...previousForm, [name]: value }));
+    setError({});
   };
 
   const handleOnClick = async (event) => {
     event.preventDefault();
-    const { username, password } = form;
+    setError({});
+    setIsSpining((previous) => (previous = true));
 
+    const { username, password } = form;
     const creds = {
       username,
       password,
@@ -31,10 +35,15 @@ const LoginPage = () => {
     try {
       const response = await login(creds);
       console.log(response);
-    } catch (error) {
-      console.log(error.response.data.validationErrors);
-      setError({ ...error.response.data.validationErrors });
+    } catch (apiError) {
+      console.log(apiError.response.data);
+      // setError({ ...apiError.response.data });
+      setError((previous) => ({
+        ...previous,
+        errorMessage: apiError.response.data.message,
+      }));
     }
+    setIsSpining((previous) => (previous = false));
   };
 
   const handleChangeLanguage = (language) => {
@@ -43,6 +52,8 @@ const LoginPage = () => {
   };
 
   const { username, password } = form;
+  // const { message } = errors;
+  const { errorMessage } = errors;
   const { t } = useTranslation();
 
   return (
@@ -52,17 +63,28 @@ const LoginPage = () => {
         <Input
           name="username"
           label={t("Username")}
-          error={username}
+          error={""}
           onChange={handleOnChange}
         />
         <Input
           name="password"
           label={t("Password")}
-          error={password}
+          error={""}
           onChange={handleOnChange}
           type="password"
         />
-        <Button text={t("Submit")} onClick={handleOnClick} />
+        {errorMessage && (
+          <div className="alert alert-danger text-center" role="alert">
+            {errorMessage}
+          </div>
+        )}
+
+        <Button
+          text={t("Submit")}
+          onClick={handleOnClick}
+          disabled={!(username && password) && "disabled"}
+          isSpining={isSpining}
+        />
       </form>
       <ButtonWithLanguage onChangeLanguage={handleChangeLanguage} />
     </div>

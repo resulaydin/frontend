@@ -13,6 +13,7 @@ const Input = (props) => {
         type={type}
         required
       />
+      <div className="invalid-feedback">{error}</div>
     </div>
   );
 };
