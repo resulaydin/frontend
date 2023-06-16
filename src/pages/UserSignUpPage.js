@@ -3,6 +3,7 @@ import { useState } from "react";
 import { signUp, changeLanguage } from "../api/apiCalls";
 import Input from "../components/Input";
 import { useTranslation, getI18n } from "react-i18next";
+import ButtonWithProgress from "../components/ButtonWithProgress";
 
 const UserSignUpPage = () => {
   const [form, setForm] = useState({
@@ -13,7 +14,7 @@ const UserSignUpPage = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const [pandingApiCall, setPandingApiCall] = useState(false);
+  const [pendingApiCall, setPendingApiCall] = useState(false);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -53,7 +54,7 @@ const UserSignUpPage = () => {
     };
 
     try {
-      setPandingApiCall(true);
+      setPendingApiCall(true);
       const response = await signUp(body);
       console.log(response);
     } catch (error) {
@@ -68,7 +69,7 @@ const UserSignUpPage = () => {
         setErrors(responseError);
       }
     }
-    setPandingApiCall(false);
+    setPendingApiCall(false);
   };
 
   const handleChangeLanguage = (language) => {
@@ -110,16 +111,12 @@ const UserSignUpPage = () => {
           onChange={handleOnChange}
         />
         <div className="mb-3 form-group">
-          <button
-            className="btn btn-primary"
-            disabled={pandingApiCall || passwordRepeat !== undefined}
+          <ButtonWithProgress
+            text={t("Submit")}
+            disabled={pendingApiCall || passwordRepeat !== undefined}
             onClick={onClickSignUp}
-          >
-            {pandingApiCall && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
-            {t("Submit")}
-          </button>
+            pendingApiCall={pendingApiCall}
+          />
         </div>
       </form>
       <div

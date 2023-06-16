@@ -2,9 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { login, changeLanguage } from "../api/apiCalls";
 import Input from "../components/Input";
+import Button from "../components/Button";
 import ButtonWithLanguage from "../components/ButtonWithLanguage";
 import { useTranslation, getI18n } from "react-i18next";
-import ButtonWithProgress from "../components/ButtonWithProgress";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -13,7 +13,7 @@ const LoginPage = () => {
   });
 
   const [errors, setError] = useState({});
-  const [pendingApiCall, setPendinApiCall] = useState(false);
+  const [isSpining, setIsSpining] = useState(false);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -24,7 +24,7 @@ const LoginPage = () => {
   const handleOnClick = async (event) => {
     event.preventDefault();
     setError({});
-    setPendinApiCall((previous) => (previous = true));
+    setIsSpining((previous) => (previous = true));
 
     const { username, password } = form;
     const creds = {
@@ -37,12 +37,13 @@ const LoginPage = () => {
       console.log(response);
     } catch (apiError) {
       console.log(apiError.response.data);
+      // setError({ ...apiError.response.data });
       setError((previous) => ({
         ...previous,
         errorMessage: apiError.response.data.message,
       }));
     }
-    setPendinApiCall((previous) => (previous = false));
+    setIsSpining((previous) => (previous = false));
   };
 
   const handleChangeLanguage = (language) => {
@@ -78,14 +79,12 @@ const LoginPage = () => {
           </div>
         )}
 
-        <div className="text-center">
-          <ButtonWithProgress
-            text={t("Submit")}
-            onClick={handleOnClick}
-            disabled={(!(username && password) || pendingApiCall) && "disabled"}
-            pendingApiCall={pendingApiCall}
-          />
-        </div>
+        <Button
+          text={t("Submit")}
+          onClick={handleOnClick}
+          disabled={!(username && password) && "disabled"}
+          isSpining={isSpining}
+        />
       </form>
       <ButtonWithLanguage onChangeLanguage={handleChangeLanguage} />
     </div>
