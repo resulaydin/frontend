@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { signUp, changeLanguage } from "../api/apiCalls";
+import { signUp } from "../api/apiCalls";
 import Input from "../components/Input";
-import { useTranslation, getI18n } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 
 const UserSignUpPage = () => {
@@ -71,11 +71,6 @@ const UserSignUpPage = () => {
     }
     setPendingApiCall(false);
   };
-
-  const handleChangeLanguage = (language) => {
-    getI18n().changeLanguage(language);
-    changeLanguage(language);
-  };
   // console.log(getI18n());
   const { username, displayName, password, passwordRepeat } = errors;
   const { t } = useTranslation();
@@ -113,36 +108,12 @@ const UserSignUpPage = () => {
         <div className="mb-3 form-group">
           <ButtonWithProgress
             text={t("Submit")}
-            disabled={pendingApiCall || passwordRepeat !== undefined}
             onClick={onClickSignUp}
+            disabled={pendingApiCall || passwordRepeat !== undefined}
             pendingApiCall={pendingApiCall}
           />
         </div>
       </form>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          columnGap: ".3125rem",
-        }}
-      >
-        <img
-          src="https://flagsapi.com/TR/flat/24.png"
-          alt="Turkey Flag"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            handleChangeLanguage("tr");
-          }}
-        ></img>
-        <img
-          src="https://flagsapi.com/US/flat/24.png"
-          alt="US Flag"
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            handleChangeLanguage("en");
-          }}
-        ></img>
-      </div>
     </div>
   );
 };

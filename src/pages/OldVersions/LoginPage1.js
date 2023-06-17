@@ -3,7 +3,7 @@ import { useState } from "react";
 import { login, changeLanguage } from "../api/apiCalls";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import ButtonWithLanguage from "../components/ButtonWithLanguage";
+import LanguageSelector from "../components/LanguageSelector";
 import { useTranslation, getI18n } from "react-i18next";
 
 const LoginPage = () => {
@@ -86,7 +86,7 @@ const LoginPage = () => {
           isSpining={isSpining}
         />
       </form>
-      <ButtonWithLanguage onChangeLanguage={handleChangeLanguage} />
+      <LanguageSelector onChangeLanguage={handleChangeLanguage} />
     </div>
   );
 };

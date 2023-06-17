@@ -1,9 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { login, changeLanguage } from "../api/apiCalls";
+import { login } from "../api/apiCalls";
 import Input from "../components/Input";
-import ButtonWithLanguage from "../components/ButtonWithLanguage";
-import { useTranslation, getI18n } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 
 const LoginPage = () => {
@@ -45,11 +44,6 @@ const LoginPage = () => {
     setPendinApiCall((previous) => (previous = false));
   };
 
-  const handleChangeLanguage = (language) => {
-    getI18n().changeLanguage(language);
-    changeLanguage(language);
-  };
-
   const { username, password } = form;
   // const { message } = errors;
   const { errorMessage } = errors;
@@ -87,7 +81,7 @@ const LoginPage = () => {
           />
         </div>
       </form>
-      <ButtonWithLanguage onChangeLanguage={handleChangeLanguage} />
+      {/* <LanguageSelector onChangeLanguage={handleChangeLanguage} /> */}
     </div>
   );
 };
