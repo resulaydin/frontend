@@ -4,6 +4,7 @@ import { signUp } from "../api/apiCalls";
 import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
+import useApiProgress from "../hook/use-snipper";
 
 const UserSignUpPage = () => {
   const [form, setForm] = useState({
@@ -14,7 +15,9 @@ const UserSignUpPage = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const [pendingApiCall, setPendingApiCall] = useState(false);
+  // const [pendingApiCall, setPendingApiCall] = useState(false);
+
+  const pendingApiCall = useApiProgress("/api/v1.0/users");
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -54,7 +57,7 @@ const UserSignUpPage = () => {
     };
 
     try {
-      setPendingApiCall(true);
+      // setPendingApiCall(true);
       const response = await signUp(body);
       console.log(response);
     } catch (error) {
@@ -69,16 +72,15 @@ const UserSignUpPage = () => {
         setErrors(responseError);
       }
     }
-    setPendingApiCall(false);
+    // setPendingApiCall(false);
   };
-  // console.log(getI18n());
   const { username, displayName, password, passwordRepeat } = errors;
   const { t } = useTranslation();
 
   return (
     <div className="container-sm">
       <form>
-        <h1>{t("Sign Up")}</h1>
+        <h1 className="text-center">{t("Sign Up")}</h1>
         <Input
           label={t("Username")}
           name="username"
@@ -105,7 +107,7 @@ const UserSignUpPage = () => {
           type="password"
           onChange={handleOnChange}
         />
-        <div className="mb-3 form-group">
+        <div className="mb-3 form-group text-center">
           <ButtonWithProgress
             text={t("Submit")}
             onClick={onClickSignUp}

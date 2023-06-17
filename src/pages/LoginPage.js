@@ -4,6 +4,7 @@ import { login } from "../api/apiCalls";
 import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
+import useApiProgress from "../hook/use-snipper";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -12,7 +13,8 @@ const LoginPage = () => {
   });
 
   const [errors, setError] = useState({});
-  const [pendingApiCall, setPendinApiCall] = useState(false);
+  // const [pendingApiCall, setPendinApiCall] = useState(false);
+  const pendingApiCall = useApiProgress("/api/v1.0/auth");
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -23,7 +25,7 @@ const LoginPage = () => {
   const handleOnClick = async (event) => {
     event.preventDefault();
     setError({});
-    setPendinApiCall((previous) => (previous = true));
+    // setPendinApiCall((previous) => (previous = true));
 
     const { username, password } = form;
     const creds = {
@@ -35,13 +37,15 @@ const LoginPage = () => {
       const response = await login(creds);
       console.log(response);
     } catch (apiError) {
-      console.log(apiError.response.data);
-      setError((previous) => ({
-        ...previous,
-        errorMessage: apiError.response.data.message,
-      }));
+      console.log(apiError);
+      if (apiError) {
+        setError((previous) => ({
+          ...previous,
+          errorMessage: apiError.response.data.message,
+        }));
+      }
     }
-    setPendinApiCall((previous) => (previous = false));
+    // setPendinApiCall((previous) => (previous = false));
   };
 
   const { username, password } = form;
@@ -50,7 +54,7 @@ const LoginPage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="border border-3 border-top container-sm mt-5 p-5 rounded-5 w-50 text-start">
+    <div>
       <h1 className="text-center">{t("Login")}</h1>
       <form>
         <Input
