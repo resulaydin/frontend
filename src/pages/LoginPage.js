@@ -5,12 +5,15 @@ import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
     username: null,
     password: null,
   });
+
+  const navigate = useNavigate();
 
   const [errors, setError] = useState({});
   // const [pendingApiCall, setPendinApiCall] = useState(false);
@@ -35,6 +38,7 @@ const LoginPage = () => {
 
     try {
       const response = await login(creds);
+      navigate("/signup");
       console.log(response);
     } catch (apiError) {
       console.log(apiError);
@@ -85,7 +89,6 @@ const LoginPage = () => {
           />
         </div>
       </form>
-      {/* <LanguageSelector onChangeLanguage={handleChangeLanguage} /> */}
     </div>
   );
 };
