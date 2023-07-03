@@ -8,23 +8,23 @@ const LanguageSelector = (props) => {
     changeLanguage(language);
   };
   return (
-    <div className="flags text-start">
-      <img
-        src="https://flagsapi.com/TR/flat/24.png"
-        alt="Turkey Flag"
-        style={{ cursor: "pointer" }}
+    <div className="flags text-end me-2">
+      <button
+        className="rounded-circle me-2 btn btn-outline-warning"
         onClick={() => {
           handleChangeLanguage("tr");
         }}
-      />
-      <img
-        src="https://flagsapi.com/US/shiny/24.png"
-        alt="America Flag"
-        style={{ cursor: "pointer" }}
+      >
+        TR
+      </button>
+      <button
+        className="rounded-circle btn btn-outline-warning"
         onClick={() => {
           handleChangeLanguage("en");
         }}
-      />
+      >
+        EN
+      </button>
     </div>
   );
 };

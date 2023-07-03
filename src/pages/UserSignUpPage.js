@@ -57,22 +57,16 @@ const UserSignUpPage = () => {
     };
 
     try {
-      // setPendingApiCall(true);
       const response = await signUp(body);
       console.log(response);
     } catch (error) {
       const responseError = error.response.data.validationErrors;
       console.log(responseError);
-      // Bu if koşulunu yazmamış olsaydık endpoint' e bağlanmada bir sıkıntı yaşanması durumunda
-      // responseError sonucu undefined dönecek ve bunu errors nesnemize pars edecekti.
-      // Aşağıda errors destructing işlemi yaptığımızdan undefined olan bir yapı destruct olamayacağı için
-      // "UserSignUpPage.js:72 Uncaught TypeError: Cannot destructure property 'username' of 'errors' as it is undefined." hatası
-      // alınacaktı.
+
       if (responseError) {
         setErrors(responseError);
       }
     }
-    // setPendingApiCall(false);
   };
   const { username, displayName, password, passwordRepeat } = errors;
   const { t } = useTranslation();

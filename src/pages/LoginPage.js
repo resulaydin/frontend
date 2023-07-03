@@ -1,11 +1,10 @@
 import React from "react";
-import { useState } from "react";
-import { login } from "../api/apiCalls";
+import { useState, useContext } from "react";
 import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
-import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthenticationContext";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -13,10 +12,7 @@ const LoginPage = () => {
     password: null,
   });
 
-  const navigate = useNavigate();
-
-  const [errors, setError] = useState({});
-  // const [pendingApiCall, setPendinApiCall] = useState(false);
+  const { errors, setError, LoginControl } = useContext(AuthContext);
   const pendingApiCall = useApiProgress("/api/v1.0/auth");
 
   const handleOnChange = (event) => {
@@ -28,32 +24,11 @@ const LoginPage = () => {
   const handleOnClick = async (event) => {
     event.preventDefault();
     setError({});
-    // setPendinApiCall((previous) => (previous = true));
-
     const { username, password } = form;
-    const creds = {
-      username,
-      password,
-    };
-
-    try {
-      const response = await login(creds);
-      navigate("/signup");
-      console.log(response);
-    } catch (apiError) {
-      console.log(apiError);
-      if (apiError) {
-        setError((previous) => ({
-          ...previous,
-          errorMessage: apiError.response.data.message,
-        }));
-      }
-    }
-    // setPendinApiCall((previous) => (previous = false));
+    LoginControl(username, password);
   };
 
   const { username, password } = form;
-  // const { message } = errors;
   const { errorMessage } = errors;
   const { t } = useTranslation();
 
