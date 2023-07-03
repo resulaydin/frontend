@@ -50,7 +50,11 @@ const Navbar = () => {
                       {t(userInfo.username)}
                     </NavLink>
                   </li>
-                  <li className="nav-item nav-link" onClick={onLogoutSuccess}>
+                  <li
+                    className="nav-item nav-link"
+                    onClick={onLogoutSuccess}
+                    style={{ cursor: "pointer" }}
+                  >
                     {t("Logout")}
                   </li>
                 </>

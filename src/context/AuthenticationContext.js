@@ -1,5 +1,4 @@
 import React, { createContext } from "react";
-import { login } from "../api/apiCalls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +7,7 @@ const AuthContext = createContext();
 function AuthenticationContext({ children }) {
   const [errors, setError] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     username: undefined,
@@ -16,46 +16,23 @@ function AuthenticationContext({ children }) {
     password: undefined,
   });
 
-  const navigate = useNavigate();
-
-  const LoginControl = async (username, password) => {
-    const creds = {
-      username,
-      password,
-    };
-    try {
-      const response = await login(creds);
-      onLoginSuccess(response.data, password);
-      navigate("/home");
-      console.log(response);
-    } catch (apiError) {
-      console.log(apiError);
-      if (apiError) {
-        setError((previous) => ({
-          ...previous,
-          errorMessage: apiError.response.data.message,
-        }));
-      }
-    }
-  };
-
-  const onLoginSuccess = (authState, password) => {
+  const onLoginSuccess = (authState) => {
     setIsLoggedIn(true);
     setUserInfo({
       ...authState,
-      password,
     });
   };
   const onLogoutSuccess = () => {
     setIsLoggedIn(false);
     setUserInfo({});
+    navigate("/home");
   };
 
   const sharedValuesAndMethods = {
     errors,
     setError,
-    LoginControl,
     isLoggedIn,
+    onLoginSuccess,
     onLogoutSuccess,
     userInfo,
   };

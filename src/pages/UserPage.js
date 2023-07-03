@@ -1,9 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import ProfileCard from "./ProfileCard";
 
 const UserPage = () => {
-  const { username } = useParams();
-  return <div>UserPage - {username}</div>;
+  return (
+    <div>
+      <ProfileCard />
+    </div>
+  );
 };
 
 export default UserPage;

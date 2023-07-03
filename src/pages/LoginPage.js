@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
 import AuthContext from "../context/AuthenticationContext";
+import { login } from "../api/apiCalls";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [form, setForm] = useState({
@@ -12,8 +14,9 @@ const LoginPage = () => {
     password: null,
   });
 
-  const { errors, setError, LoginControl } = useContext(AuthContext);
+  const { errors, setError, onLoginSuccess } = useContext(AuthContext);
   const pendingApiCall = useApiProgress("/api/v1.0/auth");
+  const navigate = useNavigate();
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -25,7 +28,29 @@ const LoginPage = () => {
     event.preventDefault();
     setError({});
     const { username, password } = form;
-    LoginControl(username, password);
+
+    const creds = {
+      username,
+      password,
+    };
+    try {
+      const response = await login(creds);
+      const authState = {
+        ...response.data,
+        password,
+      };
+      onLoginSuccess(authState);
+      navigate("/home");
+      console.log(response);
+    } catch (apiError) {
+      console.log(apiError);
+      if (apiError) {
+        setError((previous) => ({
+          ...previous,
+          errorMessage: apiError.response.data.message,
+        }));
+      }
+    }
   };
 
   const { username, password } = form;
