@@ -25,4 +25,5 @@ yarn-error.log*
 #other-files
 /src/pages/OldVersions
 /src/pages/recapture
+/src/version
 temp.js

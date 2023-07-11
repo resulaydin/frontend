@@ -9,6 +9,7 @@ function AuthenticationContext({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  console.log(isLoggedIn);
   const [userInfo, setUserInfo] = useState({
     username: undefined,
     displayName: undefined,

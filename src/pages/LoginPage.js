@@ -1,22 +1,23 @@
-import React from "react";
-import { useState, useContext } from "react";
+import React, { useState } from "react";
 import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
-import AuthContext from "../context/AuthenticationContext";
-import { login } from "../api/apiCalls";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginHandler } from "../store/slices/auth-actions";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: null,
     password: null,
   });
+  const [errors, setError] = useState({});
 
-  const { errors, setError, onLoginSuccess } = useContext(AuthContext);
   const pendingApiCall = useApiProgress("/api/v1.0/auth");
-  const navigate = useNavigate();
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -34,14 +35,8 @@ const LoginPage = () => {
       password,
     };
     try {
-      const response = await login(creds);
-      const authState = {
-        ...response.data,
-        password,
-      };
-      onLoginSuccess(authState);
+      await dispatch(loginHandler(creds));
       navigate("/home");
-      console.log(response);
     } catch (apiError) {
       console.log(apiError);
       if (apiError) {
@@ -58,7 +53,7 @@ const LoginPage = () => {
   const { t } = useTranslation();
 
   return (
-    <div>
+    <div className=" border border-3 p-5 rounded-5 w-50 m-auto ">
       <h1 className="text-center">{t("Login")}</h1>
       <form>
         <Input

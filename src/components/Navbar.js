@@ -1,13 +1,27 @@
-import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo/artemis.jpeg";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/js/bootstrap.bundle";
-import AuthContext from "../context/AuthenticationContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutHandler } from "../store/slices/auth-actions";
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const { isLoggedIn, onLogoutSuccess, userInfo } = useContext(AuthContext);
+  const { isLoggedIn, userInfo } = useSelector(
+    ({ authStore: { isLoggedIn, userInfo } }) => {
+      return {
+        isLoggedIn,
+        userInfo,
+      };
+    }
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogoutSuccess = () => {
+    dispatch(logoutHandler());
+    navigate("/login");
+  };
 
   return (
     <>
@@ -52,7 +66,7 @@ const Navbar = () => {
                   </li>
                   <li
                     className="nav-item nav-link"
-                    onClick={onLogoutSuccess}
+                    onClick={handleLogoutSuccess}
                     style={{ cursor: "pointer" }}
                   >
                     {t("Logout")}

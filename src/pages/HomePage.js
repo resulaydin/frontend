@@ -1,9 +1,12 @@
 import React from "react";
-// import { useNavigate } from "react-router-dom";
+import UserList from "../components/UserList";
 
 const HomePage = () => {
-  // const navigate = useNavigate();
-  return <div>Home</div>;
+  return (
+    <div>
+      <UserList />
+    </div>
+  );
 };
 
 export default HomePage;

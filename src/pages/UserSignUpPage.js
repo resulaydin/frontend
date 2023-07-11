@@ -1,12 +1,16 @@
 import React from "react";
 import { useState } from "react";
-import { signUp } from "../api/apiCalls";
 import Input from "../components/Input";
 import { useTranslation } from "react-i18next";
 import ButtonWithProgress from "../components/ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
+import { useDispatch } from "react-redux";
+import { signupHanler } from "../store/slices/auth-actions";
+import { useNavigate } from "react-router-dom";
 
 const UserSignUpPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     username: null,
     displayName: null,
@@ -17,34 +21,15 @@ const UserSignUpPage = () => {
 
   // const [pendingApiCall, setPendingApiCall] = useState(false);
 
-  const pendingApiCall = useApiProgress("/api/v1.0/users");
+  const pendingApiCallForSignup = useApiProgress("/api/v1.0/users");
+  const pendingApiCallForLogin = useApiProgress("/api/v1.0/auth");
+  const pendingApiCall = pendingApiCallForSignup || pendingApiCallForLogin;
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
-    // setForm({ ...form, [name]: value });
-    // setErrors({ ...errors, [name]: undefined });
 
     setForm((previousForm) => ({ ...previousForm, [name]: value }));
     setErrors((previousErrors) => ({ ...previousErrors, [name]: undefined }));
-
-    if (name === "password" || name === "passwordRepeat") {
-      if (name === "password" && value !== form.passwordRepeat) {
-        setErrors((previousErrors) => ({
-          ...previousErrors,
-          passwordRepeat: "Password mismatch",
-        }));
-      } else if (name === "passwordRepeat" && value !== form.password) {
-        setErrors((previousErrors) => ({
-          ...previousErrors,
-          passwordRepeat: "Password mismatch",
-        }));
-      } else {
-        setErrors((previousErrors) => ({
-          ...previousErrors,
-          passwordRepeat: undefined,
-        }));
-      }
-    }
   };
 
   const onClickSignUp = async (event) => {
@@ -57,8 +42,8 @@ const UserSignUpPage = () => {
     };
 
     try {
-      const response = await signUp(body);
-      console.log(response);
+      await dispatch(signupHanler(body));
+      navigate("/home");
     } catch (error) {
       const responseError = error.response.data.validationErrors;
       console.log(responseError);
@@ -70,9 +55,13 @@ const UserSignUpPage = () => {
   };
   const { username, displayName, password, passwordRepeat } = errors;
   const { t } = useTranslation();
+  let passwordRepeatError = undefined;
+  if (form.password !== form.passwordRepeat) {
+    passwordRepeatError = "Password mismatch";
+  }
 
   return (
-    <div className="container-sm">
+    <div className=" border border-3 p-5 rounded-5 w-50 m-auto ">
       <form>
         <h1 className="text-center">{t("Sign Up")}</h1>
         <Input
@@ -97,7 +86,7 @@ const UserSignUpPage = () => {
         <Input
           label={t("Password Repeat")}
           name="passwordRepeat"
-          error={passwordRepeat}
+          error={passwordRepeatError}
           type="password"
           onChange={handleOnChange}
         />

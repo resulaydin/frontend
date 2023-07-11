@@ -8,7 +8,7 @@ const LanguageSelector = (props) => {
     changeLanguage(language);
   };
   return (
-    <div className="flags text-end me-2">
+    <div className="flags text-end mt-2 me-2">
       <button
         className="rounded-circle me-2 btn btn-outline-warning"
         onClick={() => {
