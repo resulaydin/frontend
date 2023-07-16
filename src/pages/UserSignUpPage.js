@@ -18,11 +18,10 @@ const UserSignUpPage = () => {
     passwordRepeat: null,
   });
   const [errors, setErrors] = useState({});
-
   // const [pendingApiCall, setPendingApiCall] = useState(false);
 
-  const pendingApiCallForSignup = useApiProgress("/api/v1.0/users");
-  const pendingApiCallForLogin = useApiProgress("/api/v1.0/auth");
+  const pendingApiCallForSignup = useApiProgress("post", "/api/v1.0/users");
+  const pendingApiCallForLogin = useApiProgress("post", "/api/v1.0/auth");
   const pendingApiCall = pendingApiCallForSignup || pendingApiCallForLogin;
 
   const handleOnChange = (event) => {

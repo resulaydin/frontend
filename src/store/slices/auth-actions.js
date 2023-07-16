@@ -1,6 +1,10 @@
-import { login } from "../../api/apiCalls";
+import {
+  login,
+  signUp,
+  setAuthorizationHeader,
+  clearAuthorizationHeader,
+} from "../../api/apiCalls";
 import SecureLS from "secure-ls";
-import { signUp } from "../../api/apiCalls";
 import {
   onLoginSuccess,
   onLogoutSuccess,
@@ -43,8 +47,8 @@ export const logoutHandler = () => {
     };
 
     updateStateStorage(newAuthState);
-
     dispatch(onLogoutSuccess(newAuthState));
+    clearAuthorizationHeader();
   };
 };
 
@@ -73,6 +77,7 @@ export const stateController = () => {
     const authInfo = secureLs.get("hoax-auth");
     if (authInfo.isLoggedIn) {
       initialState = { ...authInfo };
+      setAuthorizationHeader(initialState.userInfo);
     }
     dispatch(onChangeStateSuccess(initialState));
   };

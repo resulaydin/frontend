@@ -1,17 +1,18 @@
 import React from "react";
 import DefaultPicture from "../assets/img/avatars/avatar2.jpg";
 import { NavLink } from "react-router-dom";
+import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
 
 const UserCard = ({ user, onDeleteUser }) => {
   const { username, displayName, image } = user;
   return (
-    <div className="card mb-3 shadow">
-      <div className="row g-0">
+    <div className="card mb-3 shadow mt-2">
+      <div className="row g-0 p-4">
         <div className="col-md-3 text-center p-2" style={{ height: "115px" }}>
           <NavLink to={`/user/${username}`}>
-            <img
-              src={!image && DefaultPicture}
+            <ProfileImageWithDefault
               className="img-fluid rounded-circle mt-2"
+              image={image}
               alt={`${username} profile`}
               style={{
                 height: "100%",

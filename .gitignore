@@ -5,6 +5,11 @@
 /.pnp
 .pnp.js
 
+
+/public/onlinekazanc.html
+/public/temp.html
+
+
 # testing
 /coverage
 

@@ -17,7 +17,7 @@ const LoginPage = () => {
   });
   const [errors, setError] = useState({});
 
-  const pendingApiCall = useApiProgress("/api/v1.0/auth");
+  const pendingApiCall = useApiProgress("post", "/api/v1.0/auth");
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
