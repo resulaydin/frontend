@@ -11,6 +11,8 @@ import Input from "./Input";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { updateUser } from "../api/apiCalls";
+import ButtonWithProgress from "./ButtonWithProgress";
+import useApiProgress, { useApiProgressTemp } from "../hook/use-snipper";
 
 const ProfileCard = (props) => {
   const routeParams = useParams();
@@ -39,7 +41,6 @@ const ProfileCard = (props) => {
   const onSaveHandler = async () => {
     try {
       setError(false);
-      setInEditMode(false);
       const body = {
         displayName: updatedDisplayName,
       };
@@ -47,7 +48,6 @@ const ProfileCard = (props) => {
       setUser({ ...response.data });
     } catch (error) {
       setError(true);
-      setInEditMode(false);
     }
   };
 
@@ -56,13 +56,6 @@ const ProfileCard = (props) => {
     setInEditMode(false);
   };
 
-  // if (pathUsername !== loggedInUsername) {
-  //   return (
-  //     <div className="alert alert-danger text-center" role="alert">
-  //       User can not editable
-  //     </div>
-  //   );
-  // }
   return (
     <div className="container-sm">
       {!error && (
@@ -99,17 +92,21 @@ const ProfileCard = (props) => {
                   onChange={onChangeHandler}
                   defaultValue={updatedDisplayName}
                 />
-                <button
+                <ButtonWithProgress
                   className="btn btn-sm btn-primary me-2"
                   onClick={onSaveHandler}
                   disabled={
-                    updatedDisplayName === displayName ||
-                    (!(updatedDisplayName && displayName) && "disabled")
+                    (updatedDisplayName === displayName ||
+                      !(updatedDisplayName && displayName)) &&
+                    "disabled"
                   }
-                >
-                  <SaveIcon style={{ fontSize: "20px" }} />
-                  {t("Save")}
-                </button>
+                  text={
+                    <>
+                      <SaveIcon style={{ fontSize: "20px" }} />
+                      {t("Save")}
+                    </>
+                  }
+                />
                 <button
                   className="btn btn-sm btn-secondary"
                   onClick={onCancelHandler}

@@ -6,12 +6,12 @@ export default function useApiProgress(apiMethod, apiPath) {
   const [pendingApiCall, setPendinApiCall] = useState(false);
 
   useEffect(() => {
-    console.log("first");
     let requestInterceptor, responseInterceptor;
     const registerInterceptors = () => {
       requestInterceptor = axios.interceptors.request.use((request) => {
         const { method, url } = request;
         updateApiCallFor(method, url, true);
+        console.log("request içi");
         return request;
       });
 
