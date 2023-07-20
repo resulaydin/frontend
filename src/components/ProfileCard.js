@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import DefaultPicture from "../assets/img/avatars/profile.png";
 import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
-import UserList from "./UserList";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { updateUser } from "../api/apiCalls";
 import ButtonWithProgress from "./ButtonWithProgress";
-import useApiProgress, { useApiProgressTemp } from "../hook/use-snipper";
+import useApiProgress from "../hook/use-snipper";
 
 const ProfileCard = (props) => {
   const routeParams = useParams();
@@ -23,19 +21,46 @@ const ProfileCard = (props) => {
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
   const [error, setError] = useState(false);
-  const [user, setUser] = useState({ ...props.user });
+  const [user, setUser] = useState({});
+  const [editable, setEditable] = useState(false);
+  const [newImage, setNewImage] = useState();
   const { username, displayName, image } = user;
 
   const { t } = useTranslation();
 
-  const onEditHandler = () => {
-    setUpdatedDisplayName(displayName);
-    setInEditMode(true);
-  };
+  const pendingApiCall = useApiProgress("put", "/api/v1.0/users/" + username);
+
+  useEffect(() => {
+    setUser(props.user);
+  }, [props.user]);
+
+  useEffect(() => {
+    setEditable(pathUsername === loggedInUsername);
+  }, [pathUsername, loggedInUsername]);
+
+  useEffect(() => {
+    if (!inEditMode) {
+      setUpdatedDisplayName(undefined);
+      setNewImage(undefined);
+    } else {
+      setUpdatedDisplayName(displayName);
+    }
+  }, [inEditMode, displayName]);
 
   const onChangeHandler = (event) => {
     const { value } = event.target;
     setUpdatedDisplayName(value);
+  };
+
+  const onChangeFileHandler = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setNewImage(fileReader.result);
+      };
+      fileReader.readAsDataURL(file);
+    }
   };
 
   const onSaveHandler = async () => {
@@ -43,17 +68,15 @@ const ProfileCard = (props) => {
       setError(false);
       const body = {
         displayName: updatedDisplayName,
+        image: newImage,
       };
       const response = await updateUser(body, username);
-      setUser({ ...response.data });
+      // setUser({ ...response.data });
+      setUser(response.data);
+      setInEditMode(false);
     } catch (error) {
       setError(true);
     }
-  };
-
-  const onCancelHandler = () => {
-    setUpdatedDisplayName(undefined);
-    setInEditMode(false);
   };
 
   return (
@@ -68,7 +91,7 @@ const ProfileCard = (props) => {
                 height: "200px",
                 width: "auto",
               }}
-              image={image}
+              image={newImage || image}
             />
           </div>
           <div className="card-body">
@@ -77,13 +100,15 @@ const ProfileCard = (props) => {
                 <h3>
                   {displayName}@{username}
                 </h3>
-                <button
-                  className="btn btn-success btn-sm"
-                  onClick={onEditHandler}
-                >
-                  <EditIcon style={{ fontSize: "20px" }} />
-                  {t("Edit")}
-                </button>
+                {editable && (
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={() => setInEditMode(true)}
+                  >
+                    <EditIcon style={{ fontSize: "20px" }} />
+                    {t("Edit")}
+                  </button>
+                )}
               </>
             ) : (
               <>
@@ -92,14 +117,19 @@ const ProfileCard = (props) => {
                   onChange={onChangeHandler}
                   defaultValue={updatedDisplayName}
                 />
+                <div className="my-4">
+                  <input type="file" onChange={onChangeFileHandler} />
+                </div>
                 <ButtonWithProgress
                   className="btn btn-sm btn-primary me-2"
                   onClick={onSaveHandler}
                   disabled={
                     (updatedDisplayName === displayName ||
-                      !(updatedDisplayName && displayName)) &&
+                      !(updatedDisplayName && displayName) ||
+                      pendingApiCall) &&
                     "disabled"
                   }
+                  pendingApiCall={pendingApiCall}
                   text={
                     <>
                       <SaveIcon style={{ fontSize: "20px" }} />
@@ -109,7 +139,8 @@ const ProfileCard = (props) => {
                 />
                 <button
                   className="btn btn-sm btn-secondary"
-                  onClick={onCancelHandler}
+                  onClick={() => setInEditMode(false)}
+                  disabled={pendingApiCall}
                 >
                   <CloseIcon style={{ fontSize: "20px" }} />
                   {t("Cancel")}

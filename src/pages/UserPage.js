@@ -5,7 +5,7 @@ import { getUser } from "../api/apiCalls";
 import { useParams } from "react-router-dom";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useTranslation } from "react-i18next";
-import useApiProgress, { useApiProgressTemp } from "../hook/use-snipper";
+import useApiProgress from "../hook/use-snipper";
 import Spinner from "../components/Spinner";
 
 const UserPage = (props) => {
@@ -14,7 +14,10 @@ const UserPage = (props) => {
   const [notFound, setNotFound] = useState(false);
   const { t } = useTranslation();
 
-  const pendingApiCall = useApiProgressTemp("/api/v1.0/users/" + pathUsername);
+  const pendingApiCall = useApiProgress(
+    "get",
+    "/api/v1.0/users/" + pathUsername
+  );
 
   useEffect(() => {
     setNotFound(false);
