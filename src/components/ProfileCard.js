@@ -20,7 +20,7 @@ const ProfileCard = (props) => {
   );
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({});
   const [user, setUser] = useState({});
   const [editable, setEditable] = useState(false);
   const [newImage, setNewImage] = useState();
@@ -47,41 +47,60 @@ const ProfileCard = (props) => {
     }
   }, [inEditMode, displayName]);
 
-  const onChangeHandler = (event) => {
+  const onChangeDisplayNameHandler = (event) => {
     const { value } = event.target;
     setUpdatedDisplayName(value);
+    // delete error.displayName;
+    // setError(error);
+    // setError((previous) => ({ ...previous, displayName: undefined }));
+    // setError({});
   };
 
+  useEffect(() => {
+    setError((previous) => ({ ...previous, displayName: undefined }));
+  }, [updatedDisplayName]);
+
   const onChangeFileHandler = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setNewImage(fileReader.result);
-      };
-      fileReader.readAsDataURL(file);
+    setError((previous) => ({ ...previous, image: undefined }));
+    if (event.target.files.length < 1) {
+      return;
     }
+    const file = event.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setNewImage(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
   };
 
   const onSaveHandler = async () => {
     try {
-      setError(false);
+      let image;
+      if (newImage) {
+        image = newImage.split(",")[1];
+      }
       const body = {
         displayName: updatedDisplayName,
-        image: newImage,
+        image,
       };
       const response = await updateUser(body, username);
       // setUser({ ...response.data });
       setUser(response.data);
       setInEditMode(false);
     } catch (error) {
-      setError(true);
+      const responseError = error.response.data.validationErrors;
+      if (reportError) {
+        setError(responseError);
+      }
+      console.log(responseError);
     }
   };
 
+  const { displayName: displayNameError, image: imageError } = error || {};
+
   return (
     <div className="container-sm">
-      {!error && (
+      {
         <div className="card text-center">
           <div className="bg-light p-2">
             <ProfileImageWithDefault
@@ -91,7 +110,8 @@ const ProfileCard = (props) => {
                 height: "200px",
                 width: "auto",
               }}
-              image={newImage || image}
+              image={image}
+              tempimage={newImage}
             />
           </div>
           <div className="card-body">
@@ -114,21 +134,28 @@ const ProfileCard = (props) => {
               <>
                 <Input
                   label={t("Change Display Name")}
-                  onChange={onChangeHandler}
+                  onChange={onChangeDisplayNameHandler}
+                  error={displayNameError}
                   defaultValue={updatedDisplayName}
                 />
                 <div className="my-4">
-                  <input type="file" onChange={onChangeFileHandler} />
+                  <Input
+                    type="file"
+                    className="form-control-file"
+                    onChange={onChangeFileHandler}
+                    error={imageError}
+                  />
                 </div>
                 <ButtonWithProgress
                   className="btn btn-sm btn-primary me-2"
                   onClick={onSaveHandler}
-                  disabled={
-                    (updatedDisplayName === displayName ||
-                      !(updatedDisplayName && displayName) ||
-                      pendingApiCall) &&
-                    "disabled"
-                  }
+                  // disabled={
+                  //   (updatedDisplayName === displayName ||
+                  //     !(updatedDisplayName && displayName) ||
+                  //     pendingApiCall) &&
+                  //   "disabled"
+                  // }
+                  disabled={pendingApiCall}
                   pendingApiCall={pendingApiCall}
                   text={
                     <>
@@ -149,15 +176,15 @@ const ProfileCard = (props) => {
             )}
           </div>
         </div>
-      )}
-      {error && (
+      }
+      {/* {error && (
         <div className="alert alert-danger text-center" role="alert">
           <div className="text-center ">
             <ErrorIcon style={{ fontSize: "50px" }} />
           </div>
           {t("User not found")}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -2,11 +2,18 @@ import React from "react";
 import DefaultPicture from "../assets/img/avatars/profile.png";
 
 export const ProfileImageWithDefault = (props) => {
-  const { image, tempImage, alt } = props;
+  const { image, tempimage, alt } = props;
   let imageSource = DefaultPicture;
   if (image) {
-    imageSource = image;
+    imageSource = "/images/" + image;
   }
 
-  return <img src={tempImage || imageSource} alt={alt} {...props} />;
+  return (
+    <img
+      src={tempimage || imageSource}
+      alt={alt}
+      {...props}
+      onError={(event) => (event.target.src = DefaultPicture)}
+    />
+  );
 };
