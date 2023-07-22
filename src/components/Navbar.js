@@ -4,24 +4,55 @@ import { useTranslation } from "react-i18next";
 import "bootstrap/dist/js/bootstrap.bundle";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutHandler } from "../store/slices/auth-actions";
+import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
+import PersonIcon from "@mui/icons-material/Person";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const { isLoggedIn, userInfo } = useSelector(
-    ({ authStore: { isLoggedIn, userInfo } }) => {
-      return {
-        isLoggedIn,
-        userInfo,
-      };
-    }
-  );
+  const {
+    isLoggedIn,
+    userInfo: { username, displayName, image },
+  } = useSelector(({ authStore: { isLoggedIn, userInfo } }) => {
+    return {
+      isLoggedIn,
+      userInfo,
+    };
+  });
+
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuArea = useRef(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.addEventListener("click", menuClickTracker);
+    return () => {
+      document.removeEventListener("click", menuClickTracker);
+    };
+  }, [isLoggedIn]);
+
+  const menuClickTracker = (event) => {
+    // if (menuArea.current === null || !menuArea.current.contains(event.target)) { hata olursa kullan
+    if (!menuArea.current.contains(event.target)) {
+      setMenuVisible(false);
+    }
+  };
 
   const handleLogoutSuccess = () => {
     dispatch(logoutHandler());
     navigate("/login");
   };
+
+  let dropDownClass;
+  if (isLoggedIn) {
+    dropDownClass = "dropdown-menu p-0 shadow";
+    if (menuVisible) {
+      dropDownClass += " show";
+    }
+  }
 
   return (
     <>
@@ -53,23 +84,43 @@ const Navbar = () => {
             className="collapse navbar-collapse text-start"
             id="navbarSupportedContent"
           >
-            <ul className="navbar-nav ms-auto">
+            <ul className="navbar-nav ms-auto" ref={menuArea}>
               {isLoggedIn ? (
                 <>
-                  <li className="nav-item">
-                    <NavLink
-                      className="nav-link"
-                      to={`/user/${userInfo.username}`}
+                  <li className="nav-item dropdown">
+                    <div
+                      className="d-flex"
+                      onClick={() => setMenuVisible(true)}
+                      style={{ cursor: "pointer" }}
                     >
-                      {t(userInfo.username)}
-                    </NavLink>
-                  </li>
-                  <li
-                    className="nav-item nav-link"
-                    onClick={handleLogoutSuccess}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {t("Logout")}
+                      <ProfileImageWithDefault
+                        className="rounded-circle m-auto"
+                        image={image}
+                        width="32"
+                        height="32"
+                      />
+                      <span className="nav-link dropdown-toggle">
+                        {displayName}
+                      </span>
+                    </div>
+                    <div className={dropDownClass}>
+                      <NavLink
+                        className="nav-link dropdown-item pb-0 d-flex"
+                        to={`/user/${username}`}
+                        onClick={() => setMenuVisible(false)}
+                      >
+                        <PersonIcon className="me-2 text-info" />
+                        {t("My Profile")}
+                      </NavLink>
+                      <span
+                        className="nav-link dropdown-item d-flex"
+                        onClick={handleLogoutSuccess}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <PowerSettingsNewIcon className="me-2 text-danger" />
+                        {t("Logout")}
+                      </span>
+                    </div>
                   </li>
                 </>
               ) : (
