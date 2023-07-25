@@ -6,17 +6,10 @@ import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import LanguageSelector from "./components/LanguageSelector";
 import Navbar from "./components/Navbar";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { stateController } from "./store/slices/auth-actions";
+import { useSelector } from "react-redux";
 
 function App() {
-  const dispatch = useDispatch();
-
-  const isLoggedIn = useSelector(({ authStore: { isLoggedIn } }) => isLoggedIn);
-  useEffect(() => {
-    dispatch(stateController());
-  }, [isLoggedIn, dispatch]);
+  const isLoggedIn = useSelector((state) => state.authStore.isLoggedIn);
 
   return (
     <div className="App">

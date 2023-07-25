@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -11,12 +11,13 @@ import { useEffect, useState } from "react";
 import { updateUser } from "../api/apiCalls";
 import ButtonWithProgress from "./ButtonWithProgress";
 import useApiProgress from "../hook/use-snipper";
+import { updateSuccessHandler } from "../store/slices/auth-actions";
 
 const ProfileCard = (props) => {
   const routeParams = useParams();
   const pathUsername = routeParams.username;
   const { username: loggedInUsername } = useSelector(
-    (state) => state.authStore.userInfo
+    (state) => state.authStore
   );
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
@@ -27,6 +28,7 @@ const ProfileCard = (props) => {
   const { username, displayName, image } = user;
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const pendingApiCall = useApiProgress("put", "/api/v1.0/users/" + username);
 
@@ -84,9 +86,9 @@ const ProfileCard = (props) => {
         image,
       };
       const response = await updateUser(body, username);
-      // setUser({ ...response.data });
       setUser(response.data);
       setInEditMode(false);
+      dispatch(updateSuccessHandler(response.data));
     } catch (error) {
       const responseError = error.response.data.validationErrors;
       if (reportError) {

@@ -1,32 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
+
+const initialState = {
+  isLoggedIn: false,
+  username: "",
+  displayName: "",
+  image: "",
+  password: "",
+};
 
 const authSlice = createSlice({
   name: "authInfo",
-  initialState: {
-    isLoggedIn: false,
-    userInfo: {
-      username: "",
-      dislayName: "",
-      image: "",
-      password: "",
-    },
-  },
+  initialState,
   reducers: {
     onChangeStateSuccess(state, action) {
-      state.isLoggedIn = action.payload.isLoggedIn;
-      state.userInfo = action.payload.userInfo;
+      return { ...state, ...action.payload };
     },
     onLoginSuccess(state, action) {
-      state.userInfo = action.payload.userInfo;
-      state.isLoggedIn = action.payload.isLoggedIn;
+      return { ...state, ...action.payload };
+    },
+    onUpdateSuccess(state, action) {
+      return { ...state, ...action.payload };
     },
     onLogoutSuccess(state, action) {
-      state.userInfo = action.payload.userInfo;
-      state.isLoggedIn = action.payload.isLoggedIn;
+      return initialState;
     },
   },
 });
 
-export const { onLoginSuccess, onLogoutSuccess, onChangeStateSuccess } =
-  authSlice.actions;
+export const {
+  onLoginSuccess,
+  onLogoutSuccess,
+  onChangeStateSuccess,
+  onUpdateSuccess,
+} = authSlice.actions;
 export const authReducer = authSlice.reducer;

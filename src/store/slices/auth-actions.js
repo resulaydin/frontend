@@ -9,11 +9,24 @@ import {
   onLoginSuccess,
   onLogoutSuccess,
   onChangeStateSuccess,
+  onUpdateSuccess,
 } from "./auth-slice";
 
 const secureLs = new SecureLS();
+let initialState = {
+  isLoggedIn: false,
+  username: "",
+  displayName: "",
+  image: "",
+  password: "",
+};
 
 const updateStateStorage = (newState) => {
+  const authInfo = secureLs.get("hoax-auth");
+  if (authInfo) {
+    newState = { ...authInfo, ...newState };
+  }
+
   secureLs.set("hoax-auth", newState);
 };
 
@@ -23,13 +36,11 @@ export const loginHandler = (creds) => {
       const response = await login(creds);
 
       const authState = {
-        userInfo: {
-          ...response.data,
-          password: creds.password,
-        },
+        ...response.data,
+        password: creds.password,
         isLoggedIn: true,
       };
-
+      console.log(authState);
       dispatch(onLoginSuccess(authState));
       updateStateStorage(authState);
       return response;
@@ -41,14 +52,20 @@ export const loginHandler = (creds) => {
 
 export const logoutHandler = () => {
   return (dispatch) => {
-    const newAuthState = {
-      userInfo: {},
-      isLoggedIn: false,
-    };
-
-    updateStateStorage(newAuthState);
-    dispatch(onLogoutSuccess(newAuthState));
+    updateStateStorage(initialState);
+    dispatch(onLogoutSuccess());
     clearAuthorizationHeader();
+  };
+};
+
+export const updateSuccessHandler = ({ displayName, image }) => {
+  return (dispatch) => {
+    const userInfo = {
+      displayName,
+      image,
+    };
+    dispatch(onUpdateSuccess(userInfo));
+    updateStateStorage(userInfo);
   };
 };
 
@@ -63,21 +80,11 @@ export const signupHanler = (body) => {
 export const stateController = () => {
   return (dispatch) => {
     const secureLs = new SecureLS();
-
-    let initialState = {
-      isLoggedIn: false,
-      userInfo: {
-        username: "",
-        dislayName: "",
-        image: "",
-        password: "",
-      },
-    };
-
     const authInfo = secureLs.get("hoax-auth");
     if (authInfo.isLoggedIn) {
+      console.log("authInfo");
       initialState = { ...authInfo };
-      setAuthorizationHeader(initialState.userInfo);
+      setAuthorizationHeader(initialState);
     }
     dispatch(onChangeStateSuccess(initialState));
   };

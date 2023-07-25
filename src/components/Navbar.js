@@ -3,7 +3,7 @@ import logo from "../assets/img/logo/artemis.jpeg";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/js/bootstrap.bundle";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutHandler } from "../store/slices/auth-actions";
+import { logoutHandler, stateController } from "../store/slices/auth-actions";
 import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
 import PersonIcon from "@mui/icons-material/Person";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
@@ -11,21 +11,17 @@ import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const {
-    isLoggedIn,
-    userInfo: { username, displayName, image },
-  } = useSelector(({ authStore: { isLoggedIn, userInfo } }) => {
-    return {
-      isLoggedIn,
-      userInfo,
-    };
-  });
-
+  const authStore = useSelector((state) => state.authStore);
+  const { isLoggedIn, username, displayName, image } = authStore;
   const [menuVisible, setMenuVisible] = useState(false);
   const menuArea = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(stateController());
+  }, [isLoggedIn, username, displayName, image, dispatch]);
 
   useEffect(() => {
     document.addEventListener("click", menuClickTracker);
