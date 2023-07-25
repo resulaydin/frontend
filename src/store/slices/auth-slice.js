@@ -1,16 +1,14 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 
-const initialState = {
-  isLoggedIn: false,
-  username: "",
-  displayName: "",
-  image: "",
-  password: "",
-};
-
 const authSlice = createSlice({
   name: "authInfo",
-  initialState,
+  initialState: {
+    isLoggedIn: false,
+    username: "",
+    displayName: "",
+    image: "",
+    password: "",
+  },
   reducers: {
     onChangeStateSuccess(state, action) {
       return { ...state, ...action.payload };
@@ -21,8 +19,9 @@ const authSlice = createSlice({
     onUpdateSuccess(state, action) {
       return { ...state, ...action.payload };
     },
+
     onLogoutSuccess(state, action) {
-      return initialState;
+      return { ...state, ...action.payload };
     },
   },
 });

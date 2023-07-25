@@ -13,13 +13,6 @@ import {
 } from "./auth-slice";
 
 const secureLs = new SecureLS();
-let initialState = {
-  isLoggedIn: false,
-  username: "",
-  displayName: "",
-  image: "",
-  password: "",
-};
 
 const updateStateStorage = (newState) => {
   const authInfo = secureLs.get("hoax-auth");
@@ -52,8 +45,16 @@ export const loginHandler = (creds) => {
 
 export const logoutHandler = () => {
   return (dispatch) => {
-    updateStateStorage(initialState);
-    dispatch(onLogoutSuccess());
+    const newAuthState = {
+      isLoggedIn: false,
+      username: "",
+      displayName: "",
+      image: "",
+      password: "",
+    };
+
+    updateStateStorage(newAuthState);
+    dispatch(onLogoutSuccess(newAuthState));
     clearAuthorizationHeader();
   };
 };
@@ -80,6 +81,17 @@ export const signupHanler = (body) => {
 export const stateController = () => {
   return (dispatch) => {
     const secureLs = new SecureLS();
+
+    // console.log("state-control");
+
+    let initialState = {
+      isLoggedIn: false,
+      username: "",
+      displayName: "",
+      image: "",
+      password: "",
+    };
+
     const authInfo = secureLs.get("hoax-auth");
     if (authInfo.isLoggedIn) {
       console.log("authInfo");
