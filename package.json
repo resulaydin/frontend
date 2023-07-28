@@ -22,6 +22,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.63.3",
     "secure-ls": "^1.2.6",
+    "timeago.js": "^4.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -48,5 +49,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "allowedHosts": "all"
 }

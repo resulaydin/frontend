@@ -24,19 +24,20 @@ export const changeLanguage = (language) => {
   axios.defaults.headers["accept-language"] = language;
 };
 
-// export const setAuthorizationHeader = ({ username, password, isLoggedIn }) => {
-//   if (isLoggedIn) {
-//     const authorizationHeaderValue = `Basic ${btoa(username + ":" + password)}`;
-//     axios.defaults.headers["Authorization"] = authorizationHeaderValue;
-//   }
-//   delete axios.defaults.headers["Authorization"];
-// };
-
-export const setAuthorizationHeader = ({ username, password }) => {
-  const authorizationHeaderValue = `Basic ${btoa(username + ":" + password)}`;
-  axios.defaults.headers["Authorization"] = authorizationHeaderValue;
+export const setAuthorizationHeader = (data) => {
+  const { username, password, isLoggedIn } = data.authStore;
+  if (isLoggedIn) {
+    const authorizationHeaderValue = `Basic ${btoa(username + ":" + password)}`;
+    axios.defaults.headers["Authorization"] = authorizationHeaderValue;
+  } else {
+    delete axios.defaults.headers["Authorization"];
+  }
 };
 
-export const clearAuthorizationHeader = () => {
-  delete axios.defaults.headers["Authorization"];
+export const getHoaxes = (page = 0, size = 1) => {
+  return axios.get(`/api/v1.0/hoaxes?page=${page}&size=${size}`);
+};
+
+export const postHoax = (body) => {
+  return axios.post("/api/v1.0/hoaxes", body);
 };

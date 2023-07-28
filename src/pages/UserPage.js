@@ -7,6 +7,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { useTranslation } from "react-i18next";
 import useApiProgress from "../hook/use-snipper";
 import Spinner from "../components/Spinner";
+import HoaxFeed from "../components/HoaxFeed";
 
 const UserPage = (props) => {
   const { username: pathUsername } = useParams();
@@ -50,8 +51,13 @@ const UserPage = (props) => {
     );
   }
   return (
-    <div>
-      <ProfileCard user={user} />
+    <div className="row">
+      <div className="col-6">
+        <ProfileCard user={user} />
+      </div>
+      <div className="col-6">
+        <HoaxFeed />
+      </div>
     </div>
   );
 };

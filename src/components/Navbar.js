@@ -20,10 +20,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(stateController());
-  }, [isLoggedIn, username, displayName, image, dispatch]);
-
-  useEffect(() => {
     document.addEventListener("click", menuClickTracker);
     return () => {
       document.removeEventListener("click", menuClickTracker);

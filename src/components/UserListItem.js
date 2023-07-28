@@ -6,9 +6,9 @@ import { ProfileImageWithDefault } from "./ProfileImageWithDefault";
 const UserCard = ({ user, onDeleteUser }) => {
   const { username, displayName, image } = user;
   return (
-    <div className="card mb-3 shadow mt-2">
+    <div className="card lg-3 shadow mt-2">
       <div className="row g-0 p-4">
-        <div className="col-md-3 text-center p-2" style={{ height: "115px" }}>
+        <div className="col-lg-3 text-center p-2" style={{ height: "115px" }}>
           <NavLink to={`/user/${username}`}>
             <ProfileImageWithDefault
               className="img-fluid rounded-circle mt-2"
@@ -21,11 +21,11 @@ const UserCard = ({ user, onDeleteUser }) => {
             />
           </NavLink>
         </div>
-        <div className="col-md-9">
+        <div className="col-lg-9">
           <div className="row">
-            <div className="col-md-9">
+            <div className="col-lg-9">
               <div className="card-body">
-                <h5 className="card-title text-center text-md-start">
+                <h5 className="card-title text-center text-lg-start">
                   {username} - {displayName}
                 </h5>
                 <p className="card-text">
@@ -38,8 +38,8 @@ const UserCard = ({ user, onDeleteUser }) => {
                 </p>
               </div>
             </div>
-            <div className="col-md-3">
-              <div className="buttons d-flex flex-column justify-content-center pe-2">
+            <div className="col-lg-3">
+              <div className="buttons d-grid gap-2 d-lg-flex-column justify-content-lg-center pe-2">
                 <button
                   className="btn btn-danger rounded-pill my-3"
                   onClick={() => {

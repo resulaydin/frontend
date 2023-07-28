@@ -32,3 +32,4 @@ yarn-error.log*
 /src/pages/recapture
 /src/version
 temp.js
+tempNotlar.js
