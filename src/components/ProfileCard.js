@@ -30,7 +30,11 @@ const ProfileCard = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const pendingApiCall = useApiProgress("put", "/api/v1.0/users/" + username);
+  const pendingApiCall = useApiProgress(
+    "put",
+    "/api/v1.0/users/" + username,
+    "ProfileCard"
+  );
 
   useEffect(() => {
     setUser(props.user);

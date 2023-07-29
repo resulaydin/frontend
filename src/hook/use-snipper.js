@@ -2,16 +2,32 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-export default function useApiProgress(apiMethod, apiPath) {
+export default function useApiProgress(apiMethod, apiPath, strictPath) {
   const [pendingApiCall, setPendinApiCall] = useState(false);
 
   useEffect(() => {
     let requestInterceptor, responseInterceptor;
+
+    const updateApiCallFor = (method, url, inProgress) => {
+      // const isStrict = strictPath ? url === apiPath : url.startsWith(apiPath);
+      // if (method === apiMethod && isStrict) {
+      //   setPendinApiCall(inProgress);
+      // }
+
+      if (apiMethod !== method) {
+        return;
+      }
+      if (strictPath && url === apiPath) {
+        setPendinApiCall(inProgress);
+      } else if (!strictPath && url.startsWith(apiPath)) {
+        setPendinApiCall(inProgress);
+      }
+    };
+
     const registerInterceptors = () => {
       requestInterceptor = axios.interceptors.request.use((request) => {
         const { method, url } = request;
         updateApiCallFor(method, url, true);
-        console.log("request içi");
         return request;
       });
 
@@ -30,12 +46,6 @@ export default function useApiProgress(apiMethod, apiPath) {
     };
     registerInterceptors();
 
-    const updateApiCallFor = (method, url, inProgress) => {
-      if (method === apiMethod && url.startsWith(apiPath)) {
-        setPendinApiCall(inProgress);
-      }
-    };
-
     const unregisterInterceptors = () => {
       axios.interceptors.request.eject(requestInterceptor);
       axios.interceptors.response.eject(responseInterceptor);
@@ -44,7 +54,7 @@ export default function useApiProgress(apiMethod, apiPath) {
     return () => {
       unregisterInterceptors();
     };
-  }, [apiMethod, apiPath]);
+  }, [apiMethod, apiPath, strictPath]);
 
   return pendingApiCall;
 }

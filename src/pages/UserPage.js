@@ -17,7 +17,8 @@ const UserPage = (props) => {
 
   const pendingApiCall = useApiProgress(
     "get",
-    "/api/v1.0/users/" + pathUsername
+    "/api/v1.0/users/" + pathUsername,
+    true
   );
 
   useEffect(() => {
@@ -36,10 +37,6 @@ const UserPage = (props) => {
     fetchUser();
   }, [pathUsername]);
 
-  if (pendingApiCall) {
-    return <Spinner />;
-  }
-
   if (notFound) {
     return (
       <div className="alert alert-danger text-center" role="alert">
@@ -50,6 +47,11 @@ const UserPage = (props) => {
       </div>
     );
   }
+
+  if (pendingApiCall || user.username !== pathUsername) {
+    return <Spinner />;
+  }
+
   return (
     <div className="row">
       <div className="col-6">
