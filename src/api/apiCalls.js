@@ -45,6 +45,9 @@ export const getHoaxes = (username, page = 0, size = 1) => {
   return axios.get(path + `${page}&size=${size}`);
 };
 
-export const getOldHoaxes = (id, page = 0, size = 2) => {
-  return axios.get(`/api/v1.0/hoaxes/${id}?page=${page}&size=${size}`);
+export const getOldHoaxes = (username, id, page = 0, size = 2) => {
+  const path = username
+    ? `/api/v1.0/users/${username}/hoaxes/`
+    : `/api/v1.0/hoaxes/`;
+  return axios.get(path + `${id}?page=${page}&size=${size}`);
 };
