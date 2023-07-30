@@ -45,9 +45,25 @@ export const getHoaxes = (username, page = 0, size = 1) => {
   return axios.get(path + `${page}&size=${size}`);
 };
 
-export const getOldHoaxes = (username, id, page = 0, size = 2) => {
+export const getOldHoaxes = (username, lastHoaxId, page = 0, size = 2) => {
   const path = username
     ? `/api/v1.0/users/${username}/hoaxes/`
     : `/api/v1.0/hoaxes/`;
-  return axios.get(path + `${id}?page=${page}&size=${size}`);
+  return axios.get(path + `${lastHoaxId}?page=${page}&size=${size}`);
+};
+
+export const getNewHoaxes = (username, lastHoaxId, page = 0, size = 2) => {
+  const path = username
+    ? `/api/v1.0/users/${username}/hoaxes/`
+    : `/api/v1.0/hoaxes/`;
+  return axios.get(
+    path + `${lastHoaxId}?direction=after&page=${page}&size=${size}`
+  );
+};
+
+export const getNewHoaxesCount = (firstHoaxId, username) => {
+  const path = username
+    ? `/api/v1.0/users/${username}/hoaxes/`
+    : `/api/v1.0/hoaxes/`;
+  return axios.get(path + `${firstHoaxId}?count=true`);
 };
